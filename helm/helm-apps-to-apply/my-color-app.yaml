@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-chart
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/maxpal-gh/dokcer-helm.git
+    targetRevision: main
+    path: helm/flask-color-chart
+    helm:
+      values: |
+        image:
+          repository: ghcr.io/maxpal-gh/flask-color-api
+          tag: latest
+          pullPolicy: IfNotPresent
+
+        service:
+          type: NodePort
+          port: 5000
+          nodePort: 30500
+
+        serviceAccount: 
+          create: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
