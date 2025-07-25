@@ -1,5 +1,15 @@
-type: {{ .Values.service.type }}
-ports:
-  - port: {{ .Values.service.port }}
-    targetPort: {{ .Values.service.containerPort }}
-    nodePort: {{ .Values.service.nodePort }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-service
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.containerPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Chart.Name }}

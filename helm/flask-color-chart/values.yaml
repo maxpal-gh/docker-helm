@@ -1,13 +1,12 @@
+replicaCount: 1
+
 image:
   repository: ghcr.io/maxpal-gh/flask-color-api
   tag: latest
   pullPolicy: IfNotPresent
 
-service:
-  type: NodePort
-  containerPort: 5000
-  nodePort: 30500
-  port: 5000
+containerPort: 5000 # This is the port your application inside the container listens on
 
-serviceAccount: 
-  create: true
+service:
+  type: ClusterIP # Can be ClusterIP, NodePort, LoadBalancer
+  port: 5000         # This is the port the service will expose
