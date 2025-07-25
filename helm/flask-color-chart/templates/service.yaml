@@ -1,0 +1,5 @@
+type: {{ .Values.service.type }}
+ports:
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.containerPort }}
+    nodePort: {{ .Values.service.nodePort }}

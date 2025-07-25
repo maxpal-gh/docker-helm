@@ -1,0 +1,12 @@
+image:
+  repository: ghcr.io/maxpal-gh/flask-color-api
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 5000
+  nodePort: 30500
+
+serviceAccount: 
+  create: true
