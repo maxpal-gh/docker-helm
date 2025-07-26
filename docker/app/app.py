@@ -10,7 +10,7 @@ COLORS = ["red", "blue", "green", "yellow", "purple", "orange"]
 @app.route("/get-color", methods=["GET"])
 def get_color():
     app_ver = "0"
-    if os.path.exist('app_ver.txt'):
+    if os.path.exists('app_ver.txt'):
         with open('app_ver.txt', 'r') as f:
             app_ver = f.read().strip()
 
