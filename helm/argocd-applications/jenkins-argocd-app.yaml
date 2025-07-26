@@ -1,0 +1,79 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jenkins
+  namespace: argocd # Namespace where the ArgoCD application resource itself lives
+spec:
+  destination:
+    namespace: jenkins # The target namespace in your Kubernetes cluster where Jenkins will be deployed
+    server: https://kubernetes.default.svc
+  project: default # Or your specific ArgoCD project
+  source:
+    repoURL: https://charts.jenkins.io # Official Jenkins Helm chart repository URL
+    targetRevision: "*" # Use the latest stable version. You can pin to a specific chart version (e.g., "4.12.0") for production stability.
+    chart: jenkins # The name of the chart within the repository
+    helm:
+      # You can override default values from the official chart here.
+      # To see all configurable options, run 'helm show values jenkins/jenkins' after adding the repo.
+      values: |
+        controller:
+          # Enable persistence for Jenkins data
+          persistence:
+            enabled: true
+            storageClassName: standard # Use your cluster's default or a specific StorageClass
+            size: 10Gi # Adjust as needed
+          
+          # Configure service type (e.g., LoadBalancer for external access)
+          serviceType: NodePort # Change to LoadBalancer or NodePort if direct external access is needed
+          admin.password: "P@ssw0rd" # <--- REPLACE THIS WITH YOUR DESIRED PASSWORD
+          # Ingress configuration (uncomment and configure if you need Ingress)
+          # ingress:
+          #   enabled: false
+          #   host: jenkins.yourdomain.com
+          #   annotations:
+          #     kubernetes.io/ingress.class: nginx
+          #     # cert-manager.io/cluster-issuer: letsencrypt-prod # Example for cert-manager
+          #   tls:
+          #     - hosts:
+          #         - jenkins.yourdomain.com
+          #       secretName: jenkins-tls-secret
+          
+          # Resource requests and limits for the Jenkins controller
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1500m"
+              memory: "2Gi"
+          
+          # Admin password (IMPORTANT: Use a Kubernetes Secret in production!)
+          # This is for initial setup. Retrieve it after deployment using:
+          # kubectl exec -it svc/jenkins -n jenkins -c jenkins -- /bin/cat /run/secrets/chart-admin-password && echo
+          # adminPassword: "your-initial-admin-password" # DO NOT use in production GitOps
+          
+          # Additional plugins to install (example)
+          # installPlugins:
+          #   - kubernetes:1.30.0
+          #   - workflow-aggregator:2.6
+          #   - git:5.1.0
+          
+        agent:
+          # Configure Jenkins agents if needed
+          # The error indicates that 'namespace' is expected under 'agent'.
+          # Explicitly setting it to an empty string or null resolves the nil pointer error.
+          namespace: "" 
+          # replicaCount: 1
+          # resources:
+          #   requests:
+          #     cpu: "200m"
+          #     memory: "512Mi"
+          #   limits:
+          #     cpu: "1000m"
+          #     memory: "1Gi"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true # Instructs ArgoCD to create the target namespace if it doesn't exist
