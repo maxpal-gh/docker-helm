@@ -6,14 +6,14 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/maxpal-gh/dokcer-helm.git
+    repoURL: https://github.com/maxpal-gh/docker-helm.git
     targetRevision: main
     path: helm/flask-color-chart
     helm:
       values: |
         image:
           repository: ghcr.io/maxpal-gh/flask-color-api
-          tag: latest
+          tag: 26
           pullPolicy: IfNotPresent
 
         service:
