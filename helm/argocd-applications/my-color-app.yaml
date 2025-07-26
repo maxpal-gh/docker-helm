@@ -13,7 +13,7 @@ spec:
       values: |
         image:
           repository: ghcr.io/maxpal-gh/flask-color-api
-          tag: 26
+          tag: 29
           pullPolicy: IfNotPresent
 
         service:
@@ -24,6 +24,7 @@ spec:
 
         serviceAccount: 
           create: true
+        replicaCount: 10
   destination:
     server: https://kubernetes.default.svc
     namespace: default
