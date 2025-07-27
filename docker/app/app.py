@@ -1,8 +1,16 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import random
 import os
+import logging
 
 app = Flask(__name__)
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,  # Use DEBUG for more verbosity
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 COLORS = ["red", "blue", "green", "yellow", "purple", "orange"]
 
@@ -14,11 +22,16 @@ def get_color():
         with open('app_ver.txt', 'r') as f:
             app_ver = f.read().strip()
 
+    chosen_color = random.choice(COLORS)
+
+    logger.info(f"Received request from {request.remote_addr}, returning color '{chosen_color}', app_ver '{app_ver}'")
+
     return jsonify({
-        "color": random.choice(COLORS),
+        "color": chosen_color,
         "app_ver": app_ver
     })
 
 
 if __name__ == "__main__":
+    logger.info("Starting Flask server on port 5000")
     app.run(host="0.0.0.0", port=5000)

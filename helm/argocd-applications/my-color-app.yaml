@@ -13,7 +13,7 @@ spec:
       values: |
         image:
           repository: ghcr.io/maxpal-gh/flask-color-api
-          tag: 29
+          tag: 30
           pullPolicy: IfNotPresent
 
         service:
